@@ -6,19 +6,26 @@
 #include<sys/ipc.h>
 #include<sys/msg.h>
 
-struct message{
-    int msg_type;
-    char msg[100];
+struct message1{
+    long mesg_type;
+    char msg[10];
 
 }message;
 int main(){
-    key_t token=ftok("progfile",65);
+    key_t token=ftok("progfile",66);
     int msgid=msgget(token,0666|IPC_CREAT);
-    message.msg_type = 1; 
-     msgrcv(msgid,&message,sizeof(message),1,0);
-        printf("recieved %s",message.msg);
-    //     msgctl(msgid,IPC_RMID,NULL);
-    msgctl(msgid,IPC_RMID,NULL);
+    if(msgid==-1)
+        printf("error");
+    
+    printf("Enter:");;
+    gets(message.msg);
+    message.mesg_type=1;
+    if( (msgsnd(msgid,&message,sizeof(message.msg),0))==-1)
+    {
+        printf("eror");
+        
+    }
+    msgctl(msgid,IPC_CREAT,NULL);
     return 0;
     
 }

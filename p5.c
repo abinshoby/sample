@@ -6,32 +6,34 @@
 #include<sys/ipc.h>
 #include<sys/msg.h>
 
-struct message{
-    int msg_type;
-    char msg[100];
+struct message1{
+    long mesg_type;
+    char msg[10];
 
 }message;
+
 void main(){
     int pid;
-    key_t token=ftok("progfile",65);
-    int msgid=msgget(token,0666|IPC_CREAT);
-    printf("Enter:");;
-    gets(message.msg);
-msgsnd(msgid,&message,sizeof(message),0);
-        // printf("recieved %s",message.msg);
-        //
+    
     pid=fork();
     if(pid<0){
         printf("error");
     }
     else if(pid==0){
         execvp("./reader2",NULL);
-        //msgctl(msgid,IPC_CREAT,NULL);
+        
     }
     else{
         wait(NULL);
-        //printf("\n Hello");
+        key_t token=ftok("progfile",66);
+        int msgid=msgget(token,0666|IPC_CREAT);
+        if(msgid==-1)
+            printf("error");
+        int a=msgrcv(msgid,&message,sizeof(message.msg)+1,1,0);
+        printf("recieved %s ",message.msg);
+   
         msgctl(msgid,IPC_RMID,NULL);
+       
         
     }
 
